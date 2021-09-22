@@ -1,24 +1,38 @@
 jQuery(document).ready(function() {
-    jQuery.ajaxSetup({
-        cache: false
-    });
     jQuery('#search').keyup(function() {
         jQuery('#result').html('');
-        var searchField = jQuery('#search').val();
-        var expression = new RegExp(searchField, "i");
-        jQuery.getJSON('words_dictionary.json', function(data) {
-            jQuery.each(data, function(val) {
-                //let length=val.length;
-                //console.log(length);
-                if (val.search(expression) === 0) {
-                    jQuery('#result').append('<li class="list-group-item link-class">' + val + '</li>');
-                }
+        let searchField = jQuery('#search').val();
+        let charLength = searchField.length;
+        if (charLength > 0) {
+            jQuery('#input_result').html("this is" + ' ' + searchField);
+        } else {
+            jQuery('#input_result').html("");
+        }
+
+        let html = "";
+        if (charLength >= 3) {
+            let expression = new RegExp(searchField, "i");
+            jQuery.getJSON('words_dictionary.json', function(data) {
+                jQuery.each(data, function(val) {
+                    if (val.search(expression) === 0) {
+
+                        html = '<li class="list-group-item link-class">' + val + '</li>';
+                        jQuery('#result').append(html);
+
+                    }
+
+                });
+
             });
-        });
+
+        }
+
     });
     jQuery('#result').on('click', 'li', function() {
-        var click_text = jQuery(this).text().split('|');
-        jQuery('#search').val(jQuery.trim(click_text[0]));
+        var clickText = jQuery(this).text().split('|');
+        jQuery('#search').val(jQuery.trim(clickText[0]));
+        jQuery('#input_result').html("this is" + ' ' + clickText[0]);
         jQuery("#result").html('');
+
     });
 });
